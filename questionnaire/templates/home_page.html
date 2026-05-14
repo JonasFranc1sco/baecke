@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Questionário de Baecke Brasil{% endblock %}
+
+{% block content %}
+    <div class="text-center mb-10">
+        <h1 class="text-3xl sm:text-4xl font-extrabold text-indigo-600 mb-2">Questionário de Baecke Brasil 🇧🇷</h1>
+    </div>
+
+    <div class="flex flex-col sm:flex-row items-center gap-8 mb-10 p-6 bg-gray-50 rounded-2xl border border-gray-100 hover:shadow-md transition-shadow">
+        <p class="flex-1 text-lg text-gray-600 leading-relaxed">
+            O Questionário de Baecke Brasil é uma ferramenta desenvolvida para avaliar o nível de atividade física habitual de uma pessoa em diferentes contextos do dia a dia — trabalho, esportes e lazer.
+        </p>
+        <img class="w-32 h-32 sm:w-40 sm:h-40 object-contain" src="{% static 'img/img_1.svg' %}" alt="Ilustração">
+    </div>
+
+    <div class="flex flex-col sm:flex-row-reverse items-center gap-8 mb-10 p-6 bg-gray-50 rounded-2xl border border-gray-100 hover:shadow-md transition-shadow">
+        <p class="flex-1 text-lg text-gray-600 leading-relaxed">
+            Com base nas respostas, o sistema calcula automaticamente o índice de atividade física, ajudando pesquisadores, profissionais de saúde e educadores físicos a entenderem melhor o comportamento ativo de cada indivíduo.
+        </p>
+        <img class="w-32 h-32 sm:w-40 sm:h-40 object-contain" src="{% static 'img/img_2.svg' %}" alt="Ilustração">
+    </div>
+
+    <div class="mt-12 flex justify-center">
+        <a class="inline-block w-full sm:w-auto min-w-[250px] bg-indigo-600 text-white px-8 py-4 rounded-xl text-xl font-semibold hover:bg-indigo-700 hover:shadow-lg transform hover:-translate-y-0.5 transition-all text-center" href="{% url 'personal' %}">
+            Iniciar questionário
+        </a>
+    </div>    
+{% endblock %}

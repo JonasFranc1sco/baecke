@@ -1,0 +1,112 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+{% load form_extras %}
+
+{% block title %}Questionário de Baecke{% endblock %}
+
+{% block extra_css %}
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<style>
+    .question-9-condicional,
+    .question-9-other-condicional {
+        display: none;
+        padding-left: 1.5rem;
+        border-left: 2px solid #4f46e5;
+        margin-left: 0.5rem;
+        margin-top: 1rem;
+        margin-bottom: 2rem;
+    }
+    
+    .radio-group {
+        display: flex;
+        gap: 2rem;
+        background: #f3f4f6;
+        padding: 0.75rem 1.25rem;
+        border-radius: 8px;
+        width: fit-content;
+    }
+
+    .radio-group label {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        cursor: pointer;
+        font-weight: 500;
+    }
+
+    .radio-group input[type="radio"] {
+        width: 1.1rem;
+        height: 1.1rem;
+        accent-color: #4f46e5;
+    }
+</style>
+{% endblock %}
+
+{% block progress_bar %}
+<div class="w-full bg-gray-100 rounded-full h-2.5 mb-8 overflow-hidden">
+    <div class="bg-indigo-600 h-full rounded-full transition-all duration-500" style="width: 100%;"></div>
+</div>
+{% endblock %}
+
+{% block content %}
+    <h2 class="text-2xl font-bold text-center mb-1 text-gray-900">Questionário de Baecke</h2>
+    <p class="text-gray-500 text-center mb-8">Preencha o formulário para saber seu Score</p>
+    
+    <form class="space-y-6" method="POST" autocomplete="off">
+        {% csrf_token %}
+        
+        {% for field in form %}
+            {# Abre grupos condicionais baseados no nome do campo #}
+            {% if field.name == 'question_9' %}
+                <div class="question-9-condicional">
+            {% elif field.name == 'question_9_other' %}
+                <div class="question-9-other-condicional">
+            {% endif %}
+
+            <div class="question-block">
+                <label class="question-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                
+                {% if field.field.widget.input_type == 'radio' or 'RadioSelect' in field.field.widget.constructor_name or 'RadioSelect' in field.field.widget|classname %}
+                     <div class="radio-group">
+                        {% for choice in field %}
+                            <label class="radio-option">
+                                {{ choice.tag }}
+                                <span>{{ choice.choice_label }}</span>
+                            </label>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {% if field.field.required %}
+                        {% render_field field class="form-control" required="required" %}
+                    {% else %}
+                        {% render_field field class="form-control" %}
+                    {% endif %}
+                {% endif %}
+
+                {% if field.errors %}
+                    <div class="mt-1 text-red-500 text-sm">
+                        {% for e in field.errors %}<p>{{ e }}</p>{% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+            {# Fecha grupos condicionais #}
+            {% if field.name == 'question_9_other_proportion' %}
+                </div> <!-- Fecha question-9-other-condicional -->
+                </div> <!-- Fecha question-9-condicional -->
+            {% endif %}
+
+        {% endfor %}
+        
+        <button type="submit" class="w-full bg-indigo-600 text-white px-6 py-3.5 rounded-xl font-semibold hover:bg-indigo-700 hover:shadow-lg transform hover:-translate-y-0.5 transition-all mt-8">
+            Finalizar e Ver Resultado
+        </button>
+    </form>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script src="{% static 'js/select2-init.js' %}"></script>
+<script src="{% static 'js/hidden.js' %}"></script>
+{% endblock %}
