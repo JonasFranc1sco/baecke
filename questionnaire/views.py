@@ -1,8 +1,9 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib import messages
 from .forms import ParticipantForm, QuestionnaireForm
 from .models import Questionnaire, Participant
-import uuid
+from django.contrib import messages
+from django.db.models import Avg, Count
+import json
 import hashlib
 # Create your views here.
 
@@ -54,3 +55,20 @@ def resultView(request, uuid):
 
 def homeView(request):
     return render(request, "home_page.html")
+
+def chartsView(request):
+    total_media = Questionnaire.objects.aggregate(media=Avg('total_calculated'))['media']
+    total_media = float(total_media) if total_media else 0.0
+    
+    sex_data = Questionnaire.objects.values('sex').annotate(total=Count('sex'))
+    labels_sex = [item['sex'] for item in sex_data]
+    values_sex = [item['total'] for item in sex_data]
+
+    context = {
+        'media_total_json': json.dumps(total_media),        
+        'labels_sex_json': json.dumps(labels_sex),
+        'values_sex_json': json.dumps(values_sex),
+        'total_answers': Questionnaire.objects.count()
+    }
+    
+    return render(request, "charts_page.html", context)

@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Dados Públicos - Baecke{% endblock %}
+
+{% block content %}
+    <div class="text-center mb-10">
+        <h1 class="text-3xl font-extrabold text-indigo-600 mb-2">Dados e Estatísticas</h1>
+        <p class="text-gray-500">Visualização anônima dos resultados coletados pelo questionário.</p>
+        <p class="text-sm font-semibold text-gray-700 mt-2">Total de participantes: {{ total_answers }}</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
+            <h2 class="text-lg font-bold text-gray-800 mb-4 text-center">Média do Escore Total</h2>
+            <canvas id="mediaChart"></canvas>
+        </div>
+
+        <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
+            <h2 class="text-lg font-bold text-gray-800 mb-4 text-center">Distribuição por Gênero</h2>
+            <canvas id="genderChart"></canvas>
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    window.chartData = {
+        mediaTotal: JSON.parse('{{ media_total_json|safe }}'),
+        labelsSexRaw: JSON.parse('{{ labels_sex_json|safe }}'),
+        valuesSex: JSON.parse('{{ values_sex_json|safe }}')
+    };
+</script>
+
+<script src="{% static 'js/charts.js' %}"></script>
+{% endblock %}

@@ -16,7 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from questionnaire.views import questionnaireView, resultView, homeView, personalView
+from questionnaire.views import questionnaireView, resultView, homeView, personalView, chartsView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -24,5 +24,8 @@ urlpatterns = [
     path('baecke/questionnaire/', questionnaireView, name='questionnaire-view'),
     path('baecke/questionnaire/<uuid:uuid>/', questionnaireView, name='questionnaire-view-uuid'),
     path('baecke/result/<uuid:uuid>/', resultView, name='result'),
+    
+    path('baecke/graficos/', chartsView, name='charts'),
+    
     path('', homeView, name="home")
 ]
