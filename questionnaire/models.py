@@ -1,7 +1,6 @@
 from django.db import models
 from decimal import Decimal
 import uuid
-from .choices import SEX_CHOICES, QUESTION_1_VALUES, QUESTION_VALUES, QUESTION_VALUES_REVERSE, QUESTION_VALUES_WEIGHT, QUESTION_VALUES_EQUAL, QUESTION_9_VALUES, QUESTION_9_YES_OR_NO, QUESTION_9_TIME, QUESTION_9_PROPORTION, QUESTION_16
 
 # Create your models here.
 class Participant(models.Model):
@@ -57,7 +56,7 @@ class Questionnaire(models.Model):
     weight = models.FloatField(max_length=700, verbose_name="Seu peso")
     #question_1 = DecimalField(choices=QUESTION_1_VALUES, verbose_name="1. Qual a sua ocupação principal?", null=True, blank=True)
     #question_2 = DecimalField(choices=QUESTION_VALUES, verbose_name="2. No trabalho, eu fico sentado:", null=True, blank=True)
-    #question_3 = DecimalField(choices=QUESTION_VALUES, verbose_name="3. No trabalho, eu fico em pé", null=True, blank=True)
+    #question_3 = DecimalField(choices=QUESTION_VALUES, verbose_name="3. No trabalho, eu fico em pé:", null=True, blank=True)
     #question_4 = DecimalField(choices=QUESTION_VALUES, verbose_name="4. No trabalho, eu ando:", null=True, blank=True)
     #question_5 = DecimalField(choices=QUESTION_VALUES, verbose_name="5. No trabalho, eu levanto objetos pesados:", null=True, blank=True)
     #question_6 = DecimalField(choices=QUESTION_VALUES_REVERSE, verbose_name="6. Depois do trabalho, eu me sinto cansado:", null=True, blank=True)
@@ -123,7 +122,14 @@ class Questionnaire(models.Model):
         ]
         
     def calculate_afo(self):
-        values = self._get_values("AFO")
+        answers = self._getanswers_by_category("AFO")
+        values = []
+        
+        for answer in answers:
+            value = Decimal(answer.choice.value)
+            if answer.question.code == "question_2":
+                value = Decimal("6") - value
+            values.append(value)
         
         if not values:
             return Decimal("0")
