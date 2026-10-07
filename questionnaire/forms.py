@@ -1,6 +1,5 @@
 from django import forms
 from .models import Questionnaire
-from .choices import QUESTION_9_YES_OR_NO
 
 class ParticipantForm(forms.ModelForm):
     email = forms.EmailField(required=True, label="Seu e-mail")

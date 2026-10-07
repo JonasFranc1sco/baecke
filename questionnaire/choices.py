@@ -7,39 +7,7 @@ SEX_CHOICES = [
     ("FM", "FEMALE")
 ]
 
-QUESTION_VALUES = [
-    (Decimal("1.0"), "Nunca"),
-    (Decimal("2.0"), "Raramente"),
-    (Decimal("3.0"), "Às vezes"),
-    (Decimal("4.0"), "Frequentemente"),
-    (Decimal("5.0"), "Sempre"),
-]
-    
-QUESTION_VALUES_REVERSE = [
-    (Decimal("1.0"), "Muito frequentemente"),
-    (Decimal("2.0"), "Frequentemente"),
-    (Decimal("3.0"), "Às vezes"),
-    (Decimal("4.0"), "Raramente"),
-    (Decimal("5.0"), "Nunca"),
-]
-    
-QUESTION_VALUES_WEIGHT = [
-    (Decimal("5.0"), "Muito mais pesado"),
-    (Decimal("4.0"), "Mais pesado"),
-    (Decimal("3.0"), "Iguamente pesado"),
-    (Decimal("2.0"), "Mais leve"),
-    (Decimal("1.0"), "Muito mais leve"),
-]
-
-QUESTION_VALUES_EQUAL = [
-    (Decimal("5.0"), "Muito maior"),
-    (Decimal("4.0"), "Maior"),
-    (Decimal("3.0"), "Igual"),
-    (Decimal("2.0"), "Mais leve"),
-    (Decimal("1.0"), "Muito mais leve"),
-]
-
-QUESTION_1_VALUES = [
+QUESTION_1 = [
     (Decimal("2.0"), "Estação de trabalho ativa, mesa com pedais, cadeira de balanço/bola, geral, esforço leve"),
     (Decimal("3.5"), "Estação de trabalho ativa, mesa com pedais (40 watts)"),
     (Decimal("5.3"), "Estação de trabalho ativa, mesa com pedais (80 watts)"),
@@ -191,7 +159,63 @@ QUESTION_1_VALUES = [
     (Decimal("6.0"), "Atividades militares, preparação de campo arterial, cavando posições defensivas"),
 ]
 
-QUESTION_9_VALUES = [
+QUESTION_2 = [
+    (Decimal("1.0"), "Nunca"),
+    (Decimal("2.0"), "Raramente"),
+    (Decimal("3.0"), "Às vezes"),
+    (Decimal("4.0"), "Frequentemente"),
+    (Decimal("5.0"), "Sempre"),
+]
+
+QUESTION_3 = [
+    (Decimal("1.0"), "Nunca"),
+    (Decimal("2.0"), "Raramente"),
+    (Decimal("3.0"), "Às vezes"),
+    (Decimal("4.0"), "Frequentemente"),
+    (Decimal("5.0"), "Sempre"),
+]
+
+QUESTION_4 = [
+    (Decimal("1.0"), "Nunca"),
+    (Decimal("2.0"), "Raramente"),
+    (Decimal("3.0"), "Às vezes"),
+    (Decimal("4.0"), "Frequentemente"),
+    (Decimal("5.0"), "Sempre"),
+]
+
+QUESTION_5 = [
+    (Decimal("1.0"), "Nunca"),
+    (Decimal("2.0"), "Raramente"),
+    (Decimal("3.0"), "Às vezes"),
+    (Decimal("4.0"), "Frequentemente"),
+    (Decimal("5.0"), "Sempre"),
+]
+    
+QUESTION_6 = [
+    (Decimal("1.0"), "Muito frequentemente"),
+    (Decimal("2.0"), "Frequentemente"),
+    (Decimal("3.0"), "Às vezes"),
+    (Decimal("4.0"), "Raramente"),
+    (Decimal("5.0"), "Nunca"),
+]
+
+QUESTION_7 = [
+    (Decimal("1.0"), "Muito frequentemente"),
+    (Decimal("2.0"), "Frequentemente"),
+    (Decimal("3.0"), "Às vezes"),
+    (Decimal("4.0"), "Raramente"),
+    (Decimal("5.0"), "Nunca"),
+]
+
+QUESTION_8 = [
+    (Decimal("5.0"), "Muito mais pesado"),
+    (Decimal("4.0"), "Mais pesado"),
+    (Decimal("3.0"), "Iguamente pesado"),
+    (Decimal("2.0"), "Mais leve"),
+    (Decimal("1.0"), "Muito mais leve"),
+]
+
+QUESTION_9 = [
     (Decimal("14.0"), "Ciclismo, montanha, subida, vigoroso"),
     (Decimal("16.0"), "Ciclismo, montanha, corrida competitiva"),
     (Decimal("8.5"), "Ciclismo, BMX"),
@@ -1304,27 +1328,53 @@ QUESTION_9_VALUES = [
     (Decimal("7.5"), "Videogames, videogame ativo, jogo com sensor de movimento/usando o corpo todo, exergames, treinos, dança (esforço vigoroso)"),
     (Decimal("9.8"), "Videogames, condicionamento/exercício de realidade virtual, intensidade vigorosa"),
 ]
-    
-    # Você pratica esportes?
-QUESTION_9_YES_OR_NO = [
-    (False, "Não"),
-    (True, "Sim")
+
+QUESTION_10 = [
+    (Decimal("5.0"), "Muito maior"),
+    (Decimal("4.0"), "Maior"),
+    (Decimal("3.0"), "Igual"),
+    (Decimal("2.0"), "Mais leve"),
+    (Decimal("1.0"), "Muito mais leve"),
 ]
 
-QUESTION_9_TIME = [
-    (Decimal("0.5"), "Menos de uma hora por semana"),
-    (Decimal("1.5"), "Mais que uma hora e menos que duas horas por semana"),
-    (Decimal("2.5"), "Mais que duas horas e menos que três horas por semana"),
-    (Decimal("3.5"), "Mais que três horas e até quatro horas por semana"),
-    (Decimal("4.5"), "Maior que quatro horas por semana")
+QUESTION_11 = [
+    (Decimal("1.0"), "Muito frequentemente"),
+    (Decimal("2.0"), "Frequentemente"),
+    (Decimal("3.0"), "Às vezes"),
+    (Decimal("4.0"), "Raramente"),
+    (Decimal("5.0"), "Nunca"),
 ]
 
-QUESTION_9_PROPORTION = [
-    (Decimal("0.04"), "Menos que um mês"),
-    (Decimal("0.17"), "Entre um a três meses"),
-    (Decimal("0.42"), "Entre quatro a seis meses"),
-    (Decimal("0.67"), "Entre sete a nove meses"),
-    (Decimal("0.92"), "Mais que nove meses")
+QUESTION_12 = [
+    (Decimal("1.0"), "Nunca"),
+    (Decimal("2.0"), "Raramente"),
+    (Decimal("3.0"), "Às vezes"),
+    (Decimal("4.0"), "Frequentemente"),
+    (Decimal("5.0"), "Sempre"),
+]
+
+QUESTION_13 = [
+    (Decimal("1.0"), "Nunca"),
+    (Decimal("2.0"), "Raramente"),
+    (Decimal("3.0"), "Às vezes"),
+    (Decimal("4.0"), "Frequentemente"),
+    (Decimal("5.0"), "Sempre"),
+]
+
+QUESTION_14 = [
+    (Decimal("1.0"), "Nunca"),
+    (Decimal("2.0"), "Raramente"),
+    (Decimal("3.0"), "Às vezes"),
+    (Decimal("4.0"), "Frequentemente"),
+    (Decimal("5.0"), "Sempre"),
+]
+
+QUESTION_15 = [
+    (Decimal("1.0"), "Nunca"),
+    (Decimal("2.0"), "Raramente"),
+    (Decimal("3.0"), "Às vezes"),
+    (Decimal("4.0"), "Frequentemente"),
+    (Decimal("5.0"), "Sempre"),
 ]
 
 QUESTION_16 = [
@@ -1334,3 +1384,4 @@ QUESTION_16 = [
     (Decimal("4"), "Entre 31 a 45 minutos por dia"),
     (Decimal("5"), "Mais de 45 minutos por dia")
 ]
+
