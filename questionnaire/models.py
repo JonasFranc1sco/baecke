@@ -25,10 +25,18 @@ class ChoiceSet(models.Model):
 # Choice representa uma única escolha que deve estar em um conjunto.
 class Choice(models.Model):
     choice_set = models.ForeignKey(ChoiceSet, on_delete=models.CASCADE, related_name="choices")
-    
+    code = models.CharField(max_length=100)
     value = models.CharField(max_length=100)
     label = models.CharField(max_length=255)
     order = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["choice_set", "code"],
+                name="unique_choice_code_per_set"
+            )
+        ]
 
     def __str__(self):
         return self.label
@@ -80,6 +88,11 @@ class Questionnaire(models.Model):
     total_calculated = models.DecimalField(default=Decimal(0), editable=False, decimal_places=4, max_digits=8)
 
     def calculate_question_9(self):
+        # Se o usuário respondeu 'Não' para question_9_boolean, retorna escore mínimo 1
+        q9_bool = self.answers.filter(question__code="question_9_boolean").first()
+        if q9_bool and q9_bool.choice.value in ("False", "false", "0"):
+            return Decimal("1")
+
         answers = self._get_answers_by_category("ELF")
         
         values = {
@@ -87,17 +100,23 @@ class Questionnaire(models.Model):
             for answer in answers
         }
         
+        # Se respondeu 'Não' para question_9_other_boolean, o segundo exercício não entra na soma
+        q9_other_bool = self.answers.filter(question__code="question_9_other_boolean").first()
+        has_other = True
+        if q9_other_bool and q9_other_bool.choice.value in ("False", "false", "0"):
+            has_other = False
+
         exercise_1 = (
-            values.get("question_9_other", Decimal("0"))
-            * values.get("question_9_other_time", Decimal("0"))
-            * values.get("question_9_other_proportion", Decimal("0"))
-        )
-        
-        exercise_2 = (
             values.get("question_9", Decimal("0"))
             * values.get("question_9_time", Decimal("0"))
             * values.get("question_9_proportion", Decimal("0"))
         )
+        
+        exercise_2 = (
+            values.get("question_9_other", Decimal("0"))
+            * values.get("question_9_other_time", Decimal("0"))
+            * values.get("question_9_other_proportion", Decimal("0"))
+        ) if has_other else Decimal("0")
         
         total = exercise_1 + exercise_2
         
@@ -112,17 +131,17 @@ class Questionnaire(models.Model):
         else:
             return Decimal("5")
 
-    def _getanswers_by_category(self, category):
+    def _get_answers_by_category(self, category):
         return self.answers.filter(question__choice_set__category=category).select_related("question", "choice")
     
     def _get_values(self, category):
-        return[
+        return [
             Decimal(answer.choice.value)
-            for answer in self._getanswers_by_category(category)
+            for answer in self._get_answers_by_category(category)
         ]
         
     def calculate_afo(self):
-        answers = self._getanswers_by_category("AFO")
+        answers = self._get_answers_by_category("AFO")
         values = []
         
         for answer in answers:
@@ -134,7 +153,9 @@ class Questionnaire(models.Model):
         if not values:
             return Decimal("0")
         
-        return sum(values) / Decimal(len(values))
+        # Conforme calculos.md: AFO = (Q1 + Q2 + ... + Q8) / 8
+        divisor = Decimal("8") if len(values) >= 8 else Decimal(len(values))
+        return sum(values) / divisor
     
     def calculate_elf(self):
         answers = self._get_answers_by_category("ELF")
@@ -149,12 +170,13 @@ class Questionnaire(models.Model):
         q11 = values.get("question_11", Decimal("0"))
         q12 = values.get("question_12", Decimal("0"))
         
+        # Conforme calculos.md: EFL = (Q9 + Q10 + Q11 + Q12) / 4
         return (
             q9 + q10 + q11 + q12
         ) / Decimal("4")
     
     def calculate_all(self):
-        answers = self._getanswers_by_category("ALL")
+        answers = self._get_answers_by_category("ALL")
         
         values = []
         
@@ -167,15 +189,16 @@ class Questionnaire(models.Model):
         if not values:
             return Decimal("0")
         
-        return sum(values) / Decimal(len(values))
+        # Conforme calculos.md: ALL = ((6 - Q13) + Q14 + Q15 + Q16) / 4
+        divisor = Decimal("4") if len(values) >= 4 else Decimal(len(values))
+        return sum(values) / divisor
     
     def total(self):
         return (
-            self.caltulate_afo() + self.calculate_elf() + self.calculate_all()
+            self.calculate_afo() + self.calculate_elf() + self.calculate_all()
         )
     
     def save(self, *args, **kwargs):
-        self.total_calculated = self.total()
         super().save(*args, **kwargs)
         
 class Answer(models.Model):

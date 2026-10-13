@@ -1,38 +1,213 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Resultado - Baecke{% endblock %}
+{% block title %}Resultado - Baecke Saúde{% endblock %}
 
 {% block content %}
-    <h1 class="text-3xl font-bold text-center mb-2 text-gray-900">Resultado do Questionário</h1>
-    <p class="text-gray-500 text-center mb-8">Com base nas suas respostas, este é o seu score de atividade física:</p>
-    
-    <div class="flex flex-col items-center">
-        <div class="relative flex flex-col items-center justify-center w-48 h-48 rounded-full border-8 border-indigo-600 bg-gray-50 my-8 shadow-inner">
-            <span class="text-xs uppercase tracking-widest text-gray-400 font-semibold">Escore</span>
-            <span class="text-5xl font-black text-indigo-600">{{ total }}</span>
-        </div>
-        
-        <div class="w-full bg-gray-50 rounded-2xl p-6 mt-8 border border-gray-100">
-            <h4 class="text-lg font-bold text-gray-900 mb-3">O que esse valor representa?</h4>
-            <p class="text-gray-600 mb-4 text-left text-base">Este valor indica seu nível de atividade física habitual, considerando trabalho, esportes e lazer.</p>
-            <ul class="space-y-3 text-gray-600 text-sm sm:text-base">
-                <li class="flex items-start gap-2">
-                    <span class="text-indigo-600 font-bold">•</span>
-                    <span><strong>Pontuações mais altas:</strong> Indicam uma rotina mais ativa e saudável.</span>
-                </li>
-                <li class="flex items-start gap-2">
-                    <span class="text-indigo-600 font-bold">•</span>
-                    <span><strong>Pontuações mais baixas:</strong> Sugerem a necessidade de incorporar mais movimento no seu dia a dia.</span>
-                </li>
-            </ul>
-        </div>
-        
-        <div class="mt-12 w-full flex justify-center">
-            <a href="{% url 'home' %}" class="inline-block w-full sm:w-auto min-w-[250px] bg-indigo-600 text-white px-8 py-4 rounded-xl text-xl font-semibold hover:bg-indigo-700 hover:shadow-lg transform hover:-translate-y-0.5 transition-all text-center no-underline">
-                Voltar ao Início
-            </a>
-        </div>
-    </div>
-{% endblock %}
+<div class="flex flex-col gap-6 w-full max-w-xl mx-auto">
+    <!-- Main Score Display Card -->
+    <section class="relative overflow-hidden bg-white rounded-2xl border border-gray-100 shadow-sm p-6 sm:p-8 flex flex-col items-center text-center">
+        <span class="text-xs uppercase tracking-wider text-gray-400 font-bold mb-2">Escore Global de Baecke</span>
 
+        <!-- Concentric Circular Gauge Visual -->
+        <div class="relative w-48 h-48 flex items-center justify-center my-3">
+            <svg class="w-full h-full transform -rotate-90" viewBox="0 0 160 160">
+                <!-- Background Circle -->
+                <circle class="stroke-gray-100" cx="80" cy="80" fill="transparent" r="68" stroke-width="12"></circle>
+                <!-- Dynamic Score Circle -->
+                <circle
+                    id="score-ring"
+                    class="transition-all duration-1000 ease-out"
+                    cx="80"
+                    cy="80"
+                    fill="transparent"
+                    r="68"
+                    stroke-width="12"
+                    stroke-linecap="round"
+                    stroke="#0f5132"
+                    stroke-dasharray="427.2"
+                    stroke-dashoffset="427.2"
+                ></circle>
+            </svg>
+
+            <div class="absolute inset-0 flex flex-col items-center justify-center">
+                <span class="text-5xl font-black text-primary tracking-tight" id="score-number">
+                    {{ total|floatformat:2 }}
+                </span>
+                <span class="text-xs text-gray-400 font-medium mt-0.5">de 15.0 possíveis</span>
+            </div>
+        </div>
+
+        <!-- Dynamic Classification Badge -->
+        <div class="mt-2">
+            {% if total >= 9.0 %}
+            <span class="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-emerald-100 text-primary font-semibold text-sm">
+                <span class="material-symbols-outlined text-[18px]">verified</span>
+                <span>Altamente Ativo</span>
+            </span>
+            {% elif total >= 6.0 %}
+            <span class="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 font-semibold text-sm">
+                <span class="material-symbols-outlined text-[18px]">sentiment_satisfied</span>
+                <span>Moderadamente Ativo</span>
+            </span>
+            {% else %}
+            <span class="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-amber-50 text-amber-800 border border-amber-200 font-semibold text-sm">
+                <span class="material-symbols-outlined text-[18px]">info</span>
+                <span>Levemente Ativo / Sedentário</span>
+            </span>
+            {% endif %}
+        </div>
+
+        <p class="mt-4 text-xs sm:text-sm text-gray-500 max-w-sm leading-relaxed">
+            Seu escore representa a soma ponderada dos seus níveis de atividade no trabalho, nos esportes sistemáticos e no lazer cotidiano.
+        </p>
+    </section>
+
+    <!-- Segment Breakdown: As 3 Dimensões Reais de Baecke -->
+    {% if afo is not None and elf is not None and all_score is not None %}
+    <section class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 sm:p-8 flex flex-col gap-4">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-primary text-[22px]">bar_chart</span>
+                <h2 class="text-lg font-bold text-gray-900">Índices Segmentados</h2>
+            </div>
+            <span class="text-xs text-gray-400 font-medium">Escala de 1,00 a 5,00</span>
+        </div>
+
+        <!-- Dimensão 1: Ocupacional -->
+        <div class="flex flex-col gap-1.5 p-3.5 rounded-xl bg-gray-50 border border-gray-100">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center gap-2">
+                    <span class="material-symbols-outlined text-[18px] text-sky-700">work</span>
+                    <span class="text-sm font-semibold text-gray-900">1. Índice Ocupacional (IT)</span>
+                </div>
+                <span class="text-sm font-bold text-sky-700">
+                    {{ afo|floatformat:2 }} <span class="text-xs text-gray-400 font-normal">/ 5.0</span>
+                </span>
+            </div>
+            <div class="w-full h-2.5 bg-gray-200/80 rounded-full overflow-hidden flex">
+                <div class="bg-sky-600 h-full rounded-full transition-all duration-700 ease-out" style="width: calc({{ afo|stringformat:'.2f' }} * 20%);"></div>
+            </div>
+            <div class="flex justify-between text-[11px] text-gray-400">
+                <span>Demandas e posturas de trabalho</span>
+                <span>Máx: 5.0</span>
+            </div>
+        </div>
+
+        <!-- Dimensão 2: Exercícios no Lazer -->
+        <div class="flex flex-col gap-1.5 p-3.5 rounded-xl bg-emerald-50/60 border border-emerald-100">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center gap-2">
+                    <span class="material-symbols-outlined text-[18px] text-primary">fitness_center</span>
+                    <span class="text-sm font-semibold text-gray-900">2. Exercícios no Lazer (IE)</span>
+                </div>
+                <span class="text-sm font-bold text-primary">
+                    {{ elf|floatformat:2 }} <span class="text-xs text-gray-400 font-normal">/ 5.0</span>
+                </span>
+            </div>
+            <div class="w-full h-2.5 bg-emerald-100 rounded-full overflow-hidden flex">
+                <div class="bg-primary h-full rounded-full transition-all duration-700 ease-out" style="width: calc({{ elf|stringformat:'.2f' }} * 20%);"></div>
+            </div>
+            <div class="flex justify-between text-[11px] text-gray-500">
+                <span>Prática esportiva e gasto metabólico (METs)</span>
+                <span>Máx: 5.0</span>
+            </div>
+        </div>
+
+        <!-- Dimensão 3: Lazer e Locomoção -->
+        <div class="flex flex-col gap-1.5 p-3.5 rounded-xl bg-gray-50 border border-gray-100">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center gap-2">
+                    <span class="material-symbols-outlined text-[18px] text-emerald-700">directions_walk</span>
+                    <span class="text-sm font-semibold text-gray-900">3. Lazer e Locomoção (IL)</span>
+                </div>
+                <span class="text-sm font-bold text-emerald-700">
+                    {{ all_score|floatformat:2 }} <span class="text-xs text-gray-400 font-normal">/ 5.0</span>
+                </span>
+            </div>
+            <div class="w-full h-2.5 bg-gray-200/80 rounded-full overflow-hidden flex">
+                <div class="bg-emerald-600 h-full rounded-full transition-all duration-700 ease-out" style="width: calc({{ all_score|stringformat:'.2f' }} * 20%);"></div>
+            </div>
+            <div class="flex justify-between text-[11px] text-gray-400">
+                <span>Caminhada, ciclismo e recreação livre</span>
+                <span>Máx: 5.0</span>
+            </div>
+        </div>
+    </section>
+    {% endif %}
+
+    <!-- O Que Esse Valor Representa Card -->
+    <section class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 sm:p-8 flex flex-col gap-3">
+        <div class="flex items-center gap-2 text-primary">
+            <span class="material-symbols-outlined text-[22px]">lightbulb</span>
+            <h3 class="text-lg font-bold text-gray-900">O que esse valor representa?</h3>
+        </div>
+
+        <p class="text-sm text-gray-600 leading-relaxed">
+            O escore total de Baecke é obtido pela soma direta dos 3 índices (IT + IE + IL). A pontuação varia de 3,00 (mínimo) a 15,00 (máximo):
+        </p>
+
+        <ul class="space-y-2.5 text-xs sm:text-sm text-gray-600 mt-1">
+            <li class="flex items-start gap-2.5 p-2.5 rounded-xl bg-emerald-50/50 border border-emerald-100/50">
+                <span class="material-symbols-outlined text-primary text-[18px] shrink-0 mt-0.5">check_circle</span>
+                <span><strong>Escores mais altos:</strong> Indicam uma rotina com hábitos ativos frequentes, maior gasto calórico habitual e menor risco cardiovascular.</span>
+            </li>
+            <li class="flex items-start gap-2.5 p-2.5 rounded-xl bg-gray-50 border border-gray-100">
+                <span class="material-symbols-outlined text-amber-600 text-[18px] shrink-0 mt-0.5">tips_and_updates</span>
+                <span><strong>Escores mais baixos:</strong> Apontam predomínio de tempo sedentário. Pequenas adições de deslocamento ativo ou pausas laborais ajudam a elevar a pontuação.</span>
+            </li>
+        </ul>
+    </section>
+
+    <!-- Action Buttons -->
+    <div class="flex flex-col sm:flex-row items-center gap-3 pt-2 pb-6">
+        <a href="{% url 'personal' %}" class="w-full sm:flex-1 bg-primary hover:bg-primary-hover text-white px-6 py-3.5 rounded-xl font-semibold text-sm shadow-md shadow-primary/20 transition-all flex items-center justify-center gap-2 active:scale-99">
+            <span class="material-symbols-outlined text-[18px]">replay</span>
+            <span>Nova Avaliação</span>
+        </a>
+        <a href="{% url 'charts' %}" class="w-full sm:flex-1 bg-white hover:bg-gray-50 text-gray-700 border border-gray-200 px-6 py-3.5 rounded-xl font-semibold text-sm shadow-xs transition-all flex items-center justify-center gap-2">
+            <span class="material-symbols-outlined text-[18px]">analytics</span>
+            <span>Ver Estatísticas Gerais</span>
+        </a>
+        <button id="share-btn" type="button" class="w-full sm:w-auto px-4 py-3.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl font-medium text-sm transition-all flex items-center justify-center gap-1.5" title="Compartilhar">
+            <span class="material-symbols-outlined text-[18px]">share</span>
+            <span class="sm:hidden">Compartilhar</span>
+        </button>
+    </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    // Animate circular gauge
+    var totalVal = parseFloat("{{ total|stringformat:'.2f' }}") || 0;
+    var maxVal = 15.0;
+    var circumference = 427.2;
+    var percent = Math.min(Math.max(totalVal / maxVal, 0), 1);
+    var offset = circumference - (circumference * percent);
+
+    var ring = document.getElementById("score-ring");
+    if (ring) {
+        setTimeout(function () {
+            ring.style.strokeDashoffset = offset;
+        }, 150);
+    }
+
+    // Share button
+    var shareBtn = document.getElementById("share-btn");
+    if (shareBtn) {
+        shareBtn.addEventListener("click", function () {
+            if (navigator.share) {
+                navigator.share({
+                    title: "Meu Escore de Baecke",
+                    text: "Meu Escore Global de Baecke é " + totalVal.toFixed(2) + " pontos.",
+                    url: window.location.href
+                }).catch(function () {});
+            } else if (navigator.clipboard) {
+                navigator.clipboard.writeText(window.location.href);
+                alert("Link do resultado copiado para a área de transferência!");
+            }
+        });
+    }
+});
+</script>
+{% endblock %}

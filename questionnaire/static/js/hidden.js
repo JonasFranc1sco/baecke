@@ -1,85 +1,65 @@
-document.addEventListener('DOMContentLoaded', function () {
-    function isTruthyValue(val) {
-        if (val === null || val === undefined) return false;
-        const s = String(val).trim().toLowerCase();
-        return ['true', '1', 'on', 'yes', 'sim'].includes(s);
+
+$(document).ready(function () {
+    const mainBoolean = $("[name='question_9_boolean']");
+    const otherBoolean = $("[name='question_9_other_boolean']");
+
+    const mainFields = $(".question-9-main-field");
+    const otherFields = $(".question-9-other-field");
+
+    const mainBooleanBlock = $("#question-9-boolean-block");
+    const otherBooleanBlock = $("#question-9-other-boolean-block");
+
+    // choice_002 corresponde a "Sim"
+    function isYes(field) {
+        return field.filter(":checked").val() === "choice_002";
     }
 
-    function getControlValue(name) {
-        const checked = document.querySelector(`input[name="${name}"]:checked`);
-        if (checked) return checked.value;
-        // Se não houver nenhum input marcado, NÃO devolvemos o value do primeiro
-        // elemento encontrado (isso fazia com que um select vazio ou um radio
-        // não marcado ainda retornasse um valor e mostrasse os blocos).
-        // Apenas para controles não-radio/checkbox (ex: select, input text)
-        // podemos devolver seu value padrão; caso contrário retornamos null.
-        const el = document.querySelector(`[name="${name}"]`);
-        if (el) {
-            const type = el.type || el.tagName.toLowerCase();
-            if (type === 'checkbox') return el.checked ? el.value || 'true' : null;
-            if (type === 'select-one' || el.tagName.toLowerCase() === 'select' || type === 'text' || type === 'hidden') {
-                return el.value || null;
-            }
-        }
-        return null;
-    }
+    function setVisibility(elements, visible) {
+        elements.each(function () {
+            const element = $(this);
+            element.prop("hidden", !visible);
+            element.toggle(visible);
+            element.find("input, select, textarea").each(function () {
+                const field = $(this);
 
-    function wireBoolean(groupName, containerClasses) {
-        const boolName = `${groupName}_boolean`;
+                field.prop("disabled", !visible);
 
-        function toggle() {
-            const val = getControlValue(boolName);
-            const show = isTruthyValue(val);
+                if (!visible) {
+                    if (field.is(":radio, :checkbox")) {
+                        field.prop("checked", false);
+                    } else {
+                        field.val("");
+                    }
 
-            containerClasses.forEach(containerClass => {
-                document.querySelectorAll(`.${containerClass}`).forEach(node => {
-                    node.style.display = show ? 'block' : 'none';
-                });
-            });
-        }
-
-        // Sempre inicia ocultando
-        containerClasses.forEach(containerClass => {
-            document.querySelectorAll(`.${containerClass}`).forEach(node => {
-                node.style.display = 'none';
+                    if (field.hasClass("select2-hidden-accessible")) {
+                        field.trigger("change");
+                    }
+                }
             });
         });
-
-        // Observa mudanças
-        document.querySelectorAll(`[name="${boolName}"]`).forEach(el => {
-            el.addEventListener('change', toggle);
-        });
-
-        // Aplica estado inicial correto
-        toggle();
     }
 
-    // 1️⃣ Quando question_9_boolean = false → esconde tudo (inclusive 9_other)
-    // Aqui o controle principal só mostra/oculta o bloco principal. O bloco
-    // "other" será controlado pelo seu próprio booleano. Quando o principal
-    // ficar false nós também garantimos que o bloco "other" permaneça oculto.
-    wireBoolean('question_9', ['question-9-condicional']);
+    function updateVisibility() {
+        const showMain = isYes(mainBoolean);
 
-    // 2️⃣ Quando question_9_other_boolean = false → esconde apenas o grupo "outro"
-    wireBoolean('question_9_other', ['question-9-other-condicional']);
+        // Pergunta principal: question_9, question_9_time e question_9_proportion
+        setVisibility(mainFields, showMain);
 
-    // Garantir que quando o controle principal for alterado para false, o
-    // bloco "other" seja forçado a esconder. Quando for alterado para true,
-    // reavaliamos o estado do booleano interno (disparando change) para que
-    // o seu toggle mostre/oculte corretamente o conteúdo interno.
-    document.querySelectorAll(`[name="question_9_boolean"]`).forEach(el => {
-        el.addEventListener('change', function () {
-            const val = getControlValue('question_9_boolean');
-            const showMain = isTruthyValue(val);
-            if (!showMain) {
-                document.querySelectorAll('.question-9-other-condicional').forEach(node => node.style.display = 'none');
-            } else {
-                // Re-dispara change nos radios internos para que sua lógica
-                // toggle() seja aplicada (vai esconder, pois nada está marcado).
-                document.querySelectorAll(`[name="question_9_other_boolean"]`).forEach(n => {
-                    n.dispatchEvent(new Event('change'));
-                });
-            }
-        });
-    });
+        // Pergunta sobre a realização de outro exercício
+        setVisibility(otherBooleanBlock, showMain);
+
+        const showOther = showMain && isYes(otherBoolean);
+
+        // Campos do segundo exercício
+        setVisibility(otherFields, showOther);
+    }
+
+    $(document).on(
+        "change",
+        "[name='question_9_boolean'], [name='question_9_other_boolean']",
+        updateVisibility
+    );
+
+    // Define a visibilidade inicial ao abrir a página
+    updateVisibility();
 });

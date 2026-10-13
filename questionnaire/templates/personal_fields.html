@@ -2,84 +2,134 @@
 {% load static %}
 {% load widget_tweaks %}
 
-{% block title %}Informações Básicas - Baecke{% endblock %}
-
+{% block title %}Identificação - Baecke Saúde{% endblock %}
 
 {% block extra_css %}
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 {% endblock extra_css %}
-    
 
 {% block progress_bar %}
-<div class="w-full bg-gray-100 rounded-full h-2.5 mb-8 overflow-hidden">
-    <div class="bg-indigo-600 h-full rounded-full transition-all duration-500" style="width: 50%;"></div>
+<!-- Step Indicator Header -->
+<div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 sm:p-5 mb-6 flex flex-col gap-3">
+    <div class="flex items-center justify-between">
+        <div class="flex items-center gap-2">
+            <span class="inline-flex items-center justify-center w-7 h-7 rounded-full bg-primary text-white text-xs font-bold">1</span>
+            <div>
+                <span class="text-xs text-gray-400 uppercase font-semibold block leading-none">Etapa 1 de 2</span>
+                <span class="text-sm font-bold text-gray-900 leading-tight">Identificação e Dados Básicos</span>
+            </div>
+        </div>
+        <span class="text-xs font-semibold text-primary px-2.5 py-1 rounded-full bg-emerald-50 border border-emerald-100">
+            50% concluído
+        </span>
+    </div>
+    <div class="w-full bg-gray-100 h-2 rounded-full overflow-hidden">
+        <div class="bg-primary h-full rounded-full transition-all duration-500 ease-out" style="width: 50%;"></div>
+    </div>
 </div>
 {% endblock %}
 
 {% block content %}
-    <h2 class="text-2xl font-bold text-center mb-1 text-gray-900">Pesquisa acadêmica</h2>
-    <p class="text-gray-500 text-center mb-8">Antes de começar, preencha esse formulário para contribuir com a pesquisa!</p>
-    
-    <form class="space-y-6" method="POST" autocomplete="off">
+<div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 sm:p-8">
+    <div class="text-center mb-8">
+        <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-primary flex items-center justify-center mx-auto mb-3">
+            <span class="material-symbols-outlined text-[26px]">person_outline</span>
+        </div>
+        <h1 class="text-2xl font-bold text-gray-900">Perfil do Participante</h1>
+        <p class="text-gray-500 text-sm mt-1 max-w-md mx-auto">
+            Essas informações biométricas são necessárias para calibrar os cálculos de gasto energético e comparações epidemiológicas.
+        </p>
+    </div>
+
+    <form class="space-y-5" method="POST" autocomplete="off">
         {% csrf_token %}
-        
+
+        <!-- Email Field -->
         <div class="question-block">
-            <label class="question-label" for="{{ form.email.id_for_label }}">{{ form.email.label }}</label>
-            {% render_field form.email class="form-control" placeholder="Digite seu e-mail" required="required" type="email" %}
+            <label class="question-label flex items-center gap-1.5" for="{{ form.email.id_for_label }}">
+                <span class="material-symbols-outlined text-[18px] text-primary">mail</span>
+                <span>{{ form.email.label }}</span>
+            </label>
+            {% render_field form.email class="form-control" placeholder="exemplo@email.com" required="required" type="email" %}
+            <p class="text-xs text-gray-400 mt-1">Seu e-mail será armazenado de forma anônima e segura (hash criptográfico).</p>
             {% if form.email.errors %}
-            <div class="mt-1 text-red-500 text-sm">
-                {% for e in form.email.errors %}<p>{{ e }}</p>{% endfor %}
+            <div class="mt-1.5 text-red-600 text-xs font-medium flex items-center gap-1">
+                <span class="material-symbols-outlined text-[16px]">error</span>
+                {% for e in form.email.errors %}<span>{{ e }}</span>{% endfor %}
             </div>
             {% endif %}
         </div>
 
-        <div class="question-block">
-            <label class="question-label" for="{{ form.sex.id_for_label }}">{{ form.sex.label }}</label>
-            {% render_field form.sex class="form-control" required="required" %}
-            {% if form.sex.errors %}
-            <div class="mt-1 text-red-500 text-sm">
-                {% for e in form.sex.errors %}<p>{{ e }}</p>{% endfor %}
+        <!-- Grid para Sexo e Idade -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div class="question-block">
+                <label class="question-label flex items-center gap-1.5" for="{{ form.sex.id_for_label }}">
+                    <span class="material-symbols-outlined text-[18px] text-primary">wc</span>
+                    <span>{{ form.sex.label }}</span>
+                </label>
+                {% render_field form.sex class="form-control" required="required" %}
+                {% if form.sex.errors %}
+                <div class="mt-1.5 text-red-600 text-xs font-medium flex items-center gap-1">
+                    <span class="material-symbols-outlined text-[16px]">error</span>
+                    {% for e in form.sex.errors %}<span>{{ e }}</span>{% endfor %}
+                </div>
+                {% endif %}
             </div>
-            {% endif %}
+
+            <div class="question-block">
+                <label class="question-label flex items-center gap-1.5" for="{{ form.age.id_for_label }}">
+                    <span class="material-symbols-outlined text-[18px] text-primary">cake</span>
+                    <span>{{ form.age.label }}</span>
+                </label>
+                {% render_field form.age class="form-control" placeholder="Anos completos" required="required" min="1" max="120" %}
+                {% if form.age.errors %}
+                <div class="mt-1.5 text-red-600 text-xs font-medium flex items-center gap-1">
+                    <span class="material-symbols-outlined text-[16px]">error</span>
+                    {% for e in form.age.errors %}<span>{{ e }}</span>{% endfor %}
+                </div>
+                {% endif %}
+            </div>
         </div>
 
-
-        <div class="question-block">
-            <label class="question-label" for="{{ form.age.id_for_label }}">{{ form.age.label }}</label>
-            {% render_field form.age class="form-control" placeholder="Digite sua idade" required="required" min="1" max="120" %}
-            {% if form.age.errors %}
-            <div class="mt-1 text-red-500 text-sm">
-                {% for e in form.age.errors %}<p>{{ e }}</p>{% endfor %}
+        <!-- Grid para Altura e Peso -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div class="question-block">
+                <label class="question-label flex items-center gap-1.5" for="{{ form.height.id_for_label }}">
+                    <span class="material-symbols-outlined text-[18px] text-primary">height</span>
+                    <span>{{ form.height.label }}</span>
+                </label>
+                {% render_field form.height class="form-control" placeholder="Ex: 175" required="required" min="50" max="250" %}
+                <p class="text-xs text-gray-400 mt-1">Altura em centímetros (cm)</p>
+                {% if form.height.errors %}
+                <div class="mt-1.5 text-red-600 text-xs font-medium flex items-center gap-1">
+                    <span class="material-symbols-outlined text-[16px]">error</span>
+                    {% for e in form.height.errors %}<span>{{ e }}</span>{% endfor %}
+                </div>
+                {% endif %}
             </div>
-            {% endif %}
+
+            <div class="question-block">
+                <label class="question-label flex items-center gap-1.5" for="{{ form.weight.id_for_label }}">
+                    <span class="material-symbols-outlined text-[18px] text-primary">scale</span>
+                    <span>{{ form.weight.label }}</span>
+                </label>
+                {% render_field form.weight class="form-control" placeholder="Ex: 70.5" required="required" min="10" max="300" step="0.1" %}
+                <p class="text-xs text-gray-400 mt-1">Peso em quilogramas (kg)</p>
+                {% if form.weight.errors %}
+                <div class="mt-1.5 text-red-600 text-xs font-medium flex items-center gap-1">
+                    <span class="material-symbols-outlined text-[16px]">error</span>
+                    {% for e in form.weight.errors %}<span>{{ e }}</span>{% endfor %}
+                </div>
+                {% endif %}
+            </div>
         </div>
 
-        <div class="question-block">
-            <label class="question-label" for="{{ form.height.id_for_label }}">{{ form.height.label }}</label>
-            {% render_field form.height class="form-control" placeholder="Ex: 175" required="required" min="50" max="250" %}
-            <p class="text-xs text-gray-400 mt-1">Altura em centímetros (cm)</p>
-            {% if form.height.errors %}
-            <div class="mt-1 text-red-500 text-sm">
-                {% for e in form.height.errors %}<p>{{ e }}</p>{% endfor %}
-            </div>
-            {% endif %}
-        </div>
-
-        <div class="question-block">
-            <label class="question-label" for="{{ form.weight.id_for_label }}">{{ form.weight.label }}</label>
-            {% render_field form.weight class="form-control" placeholder="Ex: 70.5" required="required" min="10" max="300" step="0.1" %}
-            <p class="text-xs text-gray-400 mt-1">Peso em quilogramas (kg)</p>
-            {% if form.weight.errors %}
-            <div class="mt-1 text-red-500 text-sm">
-                {% for e in form.weight.errors %}<p>{{ e }}</p>{% endfor %}
-            </div>
-            {% endif %}
-        </div>
-
-        <button type="submit" class="w-full bg-indigo-600 text-white px-6 py-3.5 rounded-xl font-semibold hover:bg-indigo-700 hover:shadow-lg transform hover:-translate-y-0.5 transition-all mt-8">
-            Continuar
+        <button type="submit" class="w-full bg-primary hover:bg-primary-hover text-white px-6 py-4 rounded-xl font-semibold text-base shadow-md shadow-primary/20 transition-all flex items-center justify-center gap-2 mt-8 active:scale-99">
+            <span>Avançar para o Questionário</span>
+            <span class="material-symbols-outlined text-[20px]">arrow_forward</span>
         </button>
     </form>
+</div>
 {% endblock %}
 
 {% block extra_js %}

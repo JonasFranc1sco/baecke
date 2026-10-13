@@ -1,26 +1,73 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Dados Públicos - Baecke{% endblock %}
+{% block title %}Estatísticas e Dados Coletivos - Baecke Saúde{% endblock %}
 
 {% block content %}
-    <div class="text-center mb-10">
-        <h1 class="text-3xl font-extrabold text-indigo-600 mb-2">Dados e Estatísticas</h1>
-        <p class="text-gray-500">Visualização anônima dos resultados coletados pelo questionário.</p>
-        <p class="text-sm font-semibold text-gray-700 mt-2">Total de participantes: {{ total_answers }}</p>
-    </div>
-
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
-            <h2 class="text-lg font-bold text-gray-800 mb-4 text-center">Média do Escore Total</h2>
-            <canvas id="mediaChart"></canvas>
+<div class="flex flex-col gap-6 w-full">
+    <!-- Header Card -->
+    <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 sm:p-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div class="flex items-center gap-3.5">
+            <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-primary flex items-center justify-center shrink-0">
+                <span class="material-symbols-outlined text-[26px]">analytics</span>
+            </div>
+            <div>
+                <h1 class="text-2xl font-bold text-gray-900">Dados e Estatísticas Coletivas</h1>
+                <p class="text-gray-500 text-sm mt-0.5">Visualização epidemiológica dos resultados anonimizados na plataforma.</p>
+            </div>
         </div>
 
-        <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
-            <h2 class="text-lg font-bold text-gray-800 mb-4 text-center">Distribuição por Gênero</h2>
-            <canvas id="genderChart"></canvas>
+        <div class="flex items-center gap-2 px-4 py-2 rounded-xl bg-gray-50 border border-gray-200/80 text-gray-700 text-xs font-semibold shrink-0">
+            <span class="material-symbols-outlined text-primary text-[18px]">group</span>
+            <span>Total: {{ total_answers }} participantes</span>
         </div>
     </div>
+
+    <!-- Charts Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Escore Médio -->
+        <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm flex flex-col gap-4">
+            <div class="flex items-center justify-between border-b border-gray-100 pb-3">
+                <div class="flex items-center gap-2">
+                    <span class="material-symbols-outlined text-primary text-[20px]">equalizer</span>
+                    <h2 class="text-base font-bold text-gray-900">Média do Escore Total</h2>
+                </div>
+                <span class="text-xs text-gray-400 font-medium">Escala 3 - 15</span>
+            </div>
+            <div class="relative w-full aspect-4/3 flex items-center justify-center">
+                <canvas id="mediaChart"></canvas>
+            </div>
+            <p class="text-xs text-gray-500 text-center mt-auto pt-2">
+                Média aritmética de todos os questionários concluídos.
+            </p>
+        </div>
+
+        <!-- Distribuição por Gênero -->
+        <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm flex flex-col gap-4">
+            <div class="flex items-center justify-between border-b border-gray-100 pb-3">
+                <div class="flex items-center gap-2">
+                    <span class="material-symbols-outlined text-emerald-700 text-[20px]">pie_chart</span>
+                    <h2 class="text-base font-bold text-gray-900">Distribuição por Sexo</h2>
+                </div>
+                <span class="text-xs text-gray-400 font-medium">Proporção Amostral</span>
+            </div>
+            <div class="relative w-full aspect-4/3 flex items-center justify-center">
+                <canvas id="genderChart"></canvas>
+            </div>
+            <p class="text-xs text-gray-500 text-center mt-auto pt-2">
+                Distribuição percentual dos respondentes na base de dados.
+            </p>
+        </div>
+    </div>
+
+    <!-- Info Banner -->
+    <div class="bg-emerald-50/50 rounded-2xl border border-emerald-100/70 p-5 flex items-start gap-3">
+        <span class="material-symbols-outlined text-primary text-[20px] shrink-0 mt-0.5">verified_user</span>
+        <div class="text-xs text-gray-600 leading-relaxed">
+            <strong class="text-gray-900">Privacidade dos Dados:</strong> Todas as métricas agregadas utilizam dados estritamente desidentificados, em total conformidade com as diretrizes éticas de pesquisas epidemiológicas e a LGPD.
+        </div>
+    </div>
+</div>
 {% endblock %}
 
 {% block extra_js %}

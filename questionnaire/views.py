@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.db import transaction
 from .forms import ParticipantForm, QuestionnaireForm
-from .models import Questionnaire, Participant
+from .models import Questionnaire, Participant, Question, Choice, Answer
 from django.contrib import messages
 from django.db.models import Avg, Count
 import json
@@ -35,26 +36,62 @@ def personalView(request):
 def questionnaireView(request, uuid=None):
     if uuid is None:
         return redirect('personal')
-    question_obj = get_object_or_404(Questionnaire, uuid=uuid)
+    questionnaire = get_object_or_404(Questionnaire, uuid=uuid)
     if request.method == 'POST':
-        form = QuestionnaireForm(request.POST, instance=question_obj)
+        form = QuestionnaireForm(request.POST)
         if form.is_valid():
-            form.save()
+            with transaction.atomic():
+                questionnaire.answers.all().delete()
+                
+                questions = Question.objects.select_related("choice_set").filter(code__in=form.cleaned_data.keys())
+                
+                questions_by_code = {
+                    question.code: question
+                    for question in questions
+                }
+                
+                for code, selected_value in form.cleaned_data.items():
+                    if selected_value == "":
+                        continue
+                    
+                    question = questions_by_code[code]
+                    choice = Choice.objects.get(choice_set=question.choice_set, code=selected_value,)
+                    
+                    Answer.objects.create(
+                        questionnaire=questionnaire,
+                        question=question,
+                        choice=choice,
+                    )
+                    
+            questionnaire.total_calculated = questionnaire.total()
+            questionnaire.save(update_fields=["total_calculated"])
             messages.success(request, 'Questionário enviado com sucesso!')
-            return redirect('result', uuid=question_obj.uuid)
-        else:
-            messages.error(request, 'Erro ao enviar o questionário. Verifique se todas as perguntas foram respondidas.')
+            return redirect('result', uuid=questionnaire.uuid)
+        messages.error(request, 'Erro ao enviar o questionário. Verifique se todas as perguntas foram respondidas.')
     else:
-        form = QuestionnaireForm(instance=question_obj)
+        form = QuestionnaireForm()
     return render(request, 'questionnaire_fields.html', {'form': form})
 
 def resultView(request, uuid):
-    question = get_object_or_404(Questionnaire, uuid=uuid)
-    total = question.total()
-    return render(request, "result_page.html", {'total': total})
+    questionnaire = get_object_or_404(Questionnaire, uuid=uuid)
+    total = questionnaire.total_calculated if questionnaire.total_calculated else questionnaire.total()
+    afo = questionnaire.calculate_afo()
+    elf = questionnaire.calculate_elf()
+    all_score = questionnaire.calculate_all()
+    context = {
+        'questionnaire': questionnaire,
+        'total': total,
+        'afo': afo,
+        'elf': elf,
+        'all_score': all_score,
+    }
+    return render(request, "result_page.html", context)
 
 def homeView(request):
     return render(request, "home_page.html")
+
+def aboutView(request):
+    return render(request, "about_page.html")
 
 def chartsView(request):
     total_media = Questionnaire.objects.aggregate(media=Avg('total_calculated'))['media']

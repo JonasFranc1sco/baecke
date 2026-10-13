@@ -1,0 +1,179 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Sobre o Questionário de Baecke - Baecke Saúde{% endblock %}
+
+{% block content %}
+<div class="flex flex-col gap-6 w-full">
+    <!-- Hero Header Card -->
+    <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 sm:p-8 flex flex-col gap-4 relative overflow-hidden">
+        <div class="flex items-center gap-2">
+            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100/70 text-primary text-xs font-semibold">
+                <span class="material-symbols-outlined text-[16px]">verified</span>
+                Padrão Ouro Internacional
+            </span>
+            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gray-100 text-gray-700 text-xs font-semibold">
+                Validado no Brasil
+            </span>
+        </div>
+
+        <div class="flex flex-col gap-1.5">
+            <span class="text-xs uppercase tracking-wider text-primary font-bold">Fundamentação Científica</span>
+            <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 tracking-tight">Sobre o Questionário de Baecke</h1>
+            <p class="text-gray-600 text-sm sm:text-base leading-relaxed mt-1">
+                Instrumento epidemiológico padronizado mundialmente para avaliar o nível de atividade física habitual nos últimos 12 meses, integrando o ambiente ocupacional, as atividades esportivas sistemáticas e os momentos de lazer.
+            </p>
+        </div>
+
+        <!-- Quick badges -->
+        <div class="flex flex-wrap gap-2.5 pt-2 border-t border-gray-100">
+            <div class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gray-50 border border-gray-100 text-gray-700 text-xs font-medium">
+                <span class="material-symbols-outlined text-primary text-[16px]">calendar_today</span>
+                <span>Desde 1982</span>
+            </div>
+            <div class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gray-50 border border-gray-100 text-gray-700 text-xs font-medium">
+                <span class="material-symbols-outlined text-emerald-600 text-[16px]">public</span>
+                <span>Traduzido e Validado (Florindo & Guedes)</span>
+            </div>
+            <div class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gray-50 border border-gray-100 text-gray-700 text-xs font-medium">
+                <span class="material-symbols-outlined text-sky-600 text-[16px]">code</span>
+                <span>Open-Source</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- História & Origem -->
+    <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 sm:p-8 flex flex-col gap-4">
+        <div class="flex items-start gap-3">
+            <div class="w-10 h-10 rounded-xl bg-emerald-50 text-primary flex items-center justify-center shrink-0">
+                <span class="material-symbols-outlined text-[22px]">history_edu</span>
+            </div>
+            <div>
+                <span class="text-xs uppercase tracking-wider text-gray-400 font-bold">Trajetória Acadêmica</span>
+                <h2 class="text-xl font-bold text-gray-900">História e Origem</h2>
+            </div>
+        </div>
+        <p class="text-sm text-gray-600 leading-relaxed">
+            O questionário foi formulado originalmente em <strong class="text-gray-900 font-semibold">1982</strong> pelos pesquisadores <span class="font-medium text-gray-900">J.A. Baecke</span>, <span class="font-medium text-gray-900">J. Burema</span> e <span class="font-medium text-gray-900">J.E. Frijters</span> no Departamento de Nutrição Humana da <em>Universidade de Wageningen</em>, nos Países Baixos.
+        </p>
+
+        <div class="bg-emerald-50/50 rounded-xl p-4 border border-emerald-100/60 flex flex-col gap-1.5">
+            <div class="flex items-center gap-2 text-emerald-900 font-semibold text-sm">
+                <span class="material-symbols-outlined text-primary text-[18px]">flag</span>
+                <span>Validação e Adaptação Transcultural no Brasil</span>
+            </div>
+            <p class="text-xs text-gray-600 leading-relaxed">
+                No Brasil, o instrumento passou por rigorosos protocolos de validação conduzidos por pesquisadores de destaque como <strong class="text-gray-900">Florindo et al. (2004)</strong> e <strong class="text-gray-900">Guedes et al. (2005)</strong>, demonstrando alta confiabilidade e reprodutibilidade tanto em homens quanto em mulheres de diversas faixas etárias.
+            </p>
+        </div>
+    </div>
+
+    <!-- Como Funciona o Cálculo -->
+    <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 sm:p-8 flex flex-col gap-5">
+        <div class="flex items-start gap-3">
+            <div class="w-10 h-10 rounded-xl bg-emerald-50 text-primary flex items-center justify-center shrink-0">
+                <span class="material-symbols-outlined text-[22px]">calculate</span>
+            </div>
+            <div>
+                <span class="text-xs uppercase tracking-wider text-gray-400 font-bold">Lógica Algorítmica</span>
+                <h2 class="text-xl font-bold text-gray-900">Como Funciona o Cálculo</h2>
+            </div>
+        </div>
+
+        <p class="text-sm text-gray-600 leading-relaxed">
+            A metodologia de Baecke segmenta a rotina física habitual em <strong class="text-gray-900">três escores independentes</strong>, cada um variando de <strong class="text-gray-900">1,00 a 5,00</strong>. A soma desses índices compõe o Escore Global de Baecke:
+        </p>
+
+        <!-- Fórmula Visual -->
+        <div class="bg-gray-50 rounded-xl p-5 border border-gray-100 flex flex-col items-center justify-center gap-2 text-center">
+            <span class="text-xs uppercase tracking-wider font-bold text-primary">Fórmula Baecke Global</span>
+            <div class="flex items-center justify-center gap-2 sm:gap-3 flex-wrap text-sm sm:text-base">
+                <span class="px-3 py-1 rounded-lg bg-white font-bold text-primary shadow-xs border border-gray-200">IT (Ocupacional)</span>
+                <span class="font-bold text-gray-400">+</span>
+                <span class="px-3 py-1 rounded-lg bg-white font-bold text-emerald-600 shadow-xs border border-gray-200">IE (Exercício)</span>
+                <span class="font-bold text-gray-400">+</span>
+                <span class="px-3 py-1 rounded-lg bg-white font-bold text-sky-600 shadow-xs border border-gray-200">IL (Lazer)</span>
+                <span class="font-bold text-gray-400">=</span>
+                <span class="px-3 py-1 rounded-lg bg-primary text-white font-bold shadow-xs">Escore Total</span>
+            </div>
+            <span class="text-xs text-gray-500 mt-1">Escala total: de 3,00 (mínimo) a 15,00 (máximo)</span>
+        </div>
+
+        <!-- 3 Dimensões -->
+        <div class="grid grid-cols-1 gap-3">
+            <div class="p-4 rounded-xl bg-gray-50 border border-gray-100 flex items-start gap-3">
+                <div class="w-8 h-8 rounded-lg bg-emerald-100/60 text-primary flex items-center justify-center shrink-0">
+                    <span class="material-symbols-outlined text-[18px]">business_center</span>
+                </div>
+                <div class="flex flex-col">
+                    <div class="flex justify-between items-center">
+                        <span class="font-semibold text-sm text-gray-900">1. Índice Ocupacional (IT)</span>
+                        <span class="text-xs font-bold px-2 py-0.5 rounded bg-white border border-gray-200 text-gray-600">1.0 a 5.0</span>
+                    </div>
+                    <p class="text-xs text-gray-600 mt-1 leading-relaxed">
+                        Mede tempo gasto sentado, em pé, caminhando, transporte de cargas pesadas e sensação de fadiga ao final do expediente.
+                    </p>
+                </div>
+            </div>
+
+            <div class="p-4 rounded-xl bg-gray-50 border border-gray-100 flex items-start gap-3">
+                <div class="w-8 h-8 rounded-lg bg-emerald-100/60 text-emerald-700 flex items-center justify-center shrink-0">
+                    <span class="material-symbols-outlined text-[18px]">fitness_center</span>
+                </div>
+                <div class="flex flex-col">
+                    <div class="flex justify-between items-center">
+                        <span class="font-semibold text-sm text-gray-900">2. Índice de Exercício Físico (IE)</span>
+                        <span class="text-xs font-bold px-2 py-0.5 rounded bg-white border border-gray-200 text-gray-600">1.0 a 5.0</span>
+                    </div>
+                    <p class="text-xs text-gray-600 mt-1 leading-relaxed">
+                        Pondera a intensidade dos esportes praticados (gasto metabólico em METs), multiplicado pela frequência semanal e meses de prática ao ano.
+                    </p>
+                </div>
+            </div>
+
+            <div class="p-4 rounded-xl bg-gray-50 border border-gray-100 flex items-start gap-3">
+                <div class="w-8 h-8 rounded-lg bg-sky-100 text-sky-700 flex items-center justify-center shrink-0">
+                    <span class="material-symbols-outlined text-[18px]">directions_walk</span>
+                </div>
+                <div class="flex flex-col">
+                    <div class="flex justify-between items-center">
+                        <span class="font-semibold text-sm text-gray-900">3. Índice de Lazer e Locomoção (IL)</span>
+                        <span class="text-xs font-bold px-2 py-0.5 rounded bg-white border border-gray-200 text-gray-600">1.0 a 5.0</span>
+                    </div>
+                    <p class="text-xs text-gray-600 mt-1 leading-relaxed">
+                        Avalia o deslocamento ativo diário (caminhada e ciclismo) para trabalho/estudo e tempo de recreação ativa nas horas livres.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Referências Bibliográficas (ABNT) -->
+    <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 sm:p-8 flex flex-col gap-4">
+        <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-primary text-[22px]">menu_book</span>
+            <h3 class="text-lg font-bold text-gray-900">Referências Bibliográficas (Normas ABNT)</h3>
+        </div>
+
+        <div class="flex flex-col gap-2.5 text-xs text-gray-700 leading-relaxed">
+            <div class="p-3 rounded-lg bg-gray-50 border border-gray-100">
+                <strong>BAECKE, J. A.; BUREMA, J.; FRIJTERS, J. E.</strong> A short questionnaire for the measurement of habitual physical activity in epidemiological studies. <em>The American Journal of Clinical Nutrition</em>, v. 36, n. 5, p. 936-942, 1982.
+            </div>
+            <div class="p-3 rounded-lg bg-gray-50 border border-gray-100">
+                <strong>FLORINDO, A. A. et al.</strong> Metodologia para avaliação da atividade física habitual em homens adultos: validação de questionário de Baecke. <em>Revista de Saúde Pública</em>, São Paulo, v. 38, n. 4, p. 578-586, 2004.
+            </div>
+            <div class="p-3 rounded-lg bg-gray-50 border border-gray-100">
+                <strong>GUEDES, D. P.; LOPES, C. C.; GUEDES, J. E. R. P.</strong> Reprodutibilidade e validade do Questionário Habitual de Atividade Física de Baecke. <em>Revista Brasileira de Medicina do Esporte</em>, v. 11, n. 2, p. 151-158, 2005.
+            </div>
+        </div>
+    </div>
+
+    <!-- CTA -->
+    <div class="flex justify-center pt-2 pb-6">
+        <a href="{% url 'personal' %}" class="inline-flex items-center justify-center gap-2 bg-primary hover:bg-primary-hover text-white font-semibold text-base px-8 py-3.5 rounded-xl shadow-md transition-all active:scale-98">
+            <span class="material-symbols-outlined text-[20px]">assignment</span>
+            <span>Responder o Questionário</span>
+        </a>
+    </div>
+</div>
+{% endblock %}
